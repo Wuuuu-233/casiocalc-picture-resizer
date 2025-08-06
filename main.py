@@ -2,7 +2,6 @@ import sys
 import cv2
 import numpy as np
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QPushButton, QFileDialog, QLabel, QMessageBox, QGridLayout, QCheckBox,QListWidget,QVBoxLayout
-
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
 from PIL import Image, ImageQt, ImageOps,ImageFile,ImageDraw
@@ -11,19 +10,33 @@ dirname = os.path.dirname(PyQt6.__file__)
 qt_dir = os.path.join(dirname, 'Qt5', 'plugins', 'platforms')
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = qt_dir
 def pixel_line(img:ImageFile.ImageFile):
-    # 读取图片宽高并乘以3
-    w = img.width * 6
-    h = img.height * 6
+    # 读取图片宽高并乘以11
+    w = img.width * 11
+    h = img.height * 11
     # 调整图片大小
     img_resize = img.resize((w,h),Image.NEAREST)
     # 初始化画笔
     draw = ImageDraw.Draw(img_resize)
-    # 画竖线
+    # 分割线色彩配置
+    line_color = (63,63,255)
+
+    # 绘制主/次分割线
     for i in range(w):
-        draw.line([(6*i,0),(6*i,h)],fill=(0,0,255))
-    # 画横线
+        if i % 5 == 0:
+            draw.line([(11*i,0),(11*i,h)],fill=line_color)
+            draw.line([(11*i+1,0),(11*i+1,h)],fill=line_color)
+            draw.line([(11*i-1,0),(11*i-1,h)],fill=line_color)
+        else:
+            draw.line([(11*i,0),(11*i,h)],fill=line_color)
+
     for j in range(h):
-        draw.line([(0,6*j),(w,6*j)],fill=(0,0,255))
+        if j % 5 == 0:
+            draw.line([(0,11*j),(w,11*j)],fill=line_color)
+            draw.line([(0,11*j+1),(w,11*j+1)],fill=line_color)
+            draw.line([(0,11*j-1),(w,11*j-1)],fill=line_color)
+        else:
+            draw.line([(0,11*j),(w,11*j)],fill=line_color)
+
     # 返回图片
     return img_resize
 
